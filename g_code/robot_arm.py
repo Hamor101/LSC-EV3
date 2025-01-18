@@ -10,6 +10,8 @@ from pybricks.ev3devices import (
 from pybricks.parameters import Port, Direction, Button
 from pybricks.tools import wait
 
+from .g_code import GCode
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
@@ -46,41 +48,8 @@ def calibrate(m : Motor, end_crit, resetAngle, finalAngle):
     m.run_target(-90, finalAngle)
     calibrated_motors.append(m)
 
-def manual_control():
-    v = 45
-    bstate = {
-        Button.LEFT: False,
-        Button.RIGHT: False,
-        Button.UP: False,
-        Button.DOWN: False
-    }
-
-    grip_dir = 1
-    while True:
-        bp = ev3.buttons.pressed()
-        for i in bstate:
-            bstate[i] = i in bp
-        vt = v * (bstate[Button.RIGHT] - bstate[Button.LEFT])
-        vr = v * (bstate[Button.UP] - bstate[Button.DOWN])
-        if not (sensor_turn.pressed() and vt > 0):
-            motor_turn.run(vt)
-        if not (sensor_raise.pressed() and vr > 0):
-            motor_raise.run(vr)
-        
-        grip_on = Button.CENTER in bp
-        vg = v * grip_on * grip_dir
-
-        motor_grip.run(vg)
-        if motor_grip.stalled() and vg > 0 or motor_grip.angle() < -90 and vg <0:
-            grip_dir *= -1
-        
-        vs = (vt, vr, vg)
-
-        if any(vs):
-            logger.debug('Turn: %s, Raise: %s, Grip: %s', motor_turn.angle(), motor_raise.angle(), motor_grip.angle())
-        wait(20)
-
-
+def run_g_code():
+    ...
 
 
 def main():
@@ -99,7 +68,7 @@ def main():
         wait(1000)
 
 
-    manual_control()
+    run_g_code()
     
 
 if __name__ == "__main__":
