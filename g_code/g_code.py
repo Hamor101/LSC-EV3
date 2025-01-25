@@ -26,11 +26,12 @@ class GCodeLine:
         self.command = (code[0][0], int(code[0][1:]))
 
         for p in code[1:]:
-            self.params[p[0]] = float(p[1:])
-        logger.debug(self)
+            self.params[p[0].lower()] = float(p[1:])
+        #logger.debug(self)
 
     def __str__(self):
-        return f'{self.command[0]}{self.command[1]} {self.params}'
+        #return f'{self.command[0]}{self.command[1]} {self.params}'
+        pass
 
 
         
@@ -45,6 +46,8 @@ class GCode:
 
     def parse(self):
         lines = self.raw.split('\n')
+        lines = [l.rstrip('\r') for l in lines]
+        print(lines)
         assert lines[0] == lines[-1] == '%'
         for l in lines[1:-1]:
             self.lines.append(GCodeLine(l))
@@ -58,8 +61,8 @@ if __name__ == "__main__":
         file_path = sys.argv[1]
     else:
         sys.exit(1)
-    logger.info(f'Reading file: {file_path}')
+    #logger.info(f'Reading file: {file_path}')
     with open(file_path) as f:
         g_code = GCode(f.read())
-    #for l in g_code:
-    #    logger.info(l)
+        for l in g_code.lines:
+            print(l)

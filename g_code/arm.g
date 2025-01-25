@@ -1,7 +1,12 @@
 %
-F30;                Set movement speed
-G00 X90 Y45;        G00: go at max speed
-G01 X-90 Y-45
-G28;                Return home
-M30;                Quit
+F30
+G28
+G01 X-20 Y-20
+G01 X0 Y20
+G01 X20 Y-20
+G01 X-30 Y10
+G01 X30 Y10
+G01 X-20 Y-20
+G28
+M30
 %
